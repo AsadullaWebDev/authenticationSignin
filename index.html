@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title> Sign Up </title>
+
+    <style>
+        .card{
+            margin-top: 50px;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div class="container" id="authForm">
+        <div class="row">
+            <div class="col-12">
+                <div class="card col-4 mt-4">
+                    <div class="card-header">
+                        <h2 class="text-center">Sign Up</h2>
+                    </div>
+                    <div class="card-body">
+                        <div >
+                            <input  class="form-control mt-3" type="text" placeholder="FullName" id="fullNamee" required >
+                            <input  class="form-control mt-3" type="Email" placeholder="Email" id="UserEmail" required>
+                            <input  class="form-control mt-3" type="Password" placeholder="Password" required id="UserPassword">
+                            <button class="btn btn-success mt-3" id="signUpButton">Sign Up</button>
+                            <button class="btn btn-dark mt-3" id="signInButton">Sign In</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- -->
+
+    
+    <div id="secretConten">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Navbar</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                  </li>
+                </ul>
+                <button id="SignOutButton">Sign out</button>
+              </div>
+            </div>
+          </nav>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+        import {
+            getAuth, 
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyC7akU6VGNvj-1pg2Svwe79aMRa7NpDEkQ",
+          authDomain: "sinovo-6e42f.firebaseapp.com",
+          projectId: "sinovo-6e42f",
+          storageBucket: "sinovo-6e42f.appspot.com",
+          messagingSenderId: "702963559202",
+          appId: "1:702963559202:web:814de95026895e121c937b"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+
+
+        const userEmail = document.getElementById('UserEmail')
+        const userPassword = document.getElementById('UserPassword')
+        const authForm = document.getElementById("authForm")
+        const secretContect = document.getElementById("secretConten")
+        const signUpButton = document.getElementById("signUpButton")
+        const signInButton = document.getElementById("signInButton")
+        const SignOutButton = document.getElementById("SignOutButton")
+
+
+        secretContect.style.display = 'none';
+
+        const userSignUp = async() => {
+            const signUpEmail =  userEmail.value;
+            const signUpPassword =  userPassword.value;
+            createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log(user);
+                    alert("Your accaunt has been created!");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMassage = error.message;
+                    console.log(errorCode + errorMassage)
+                    alert("Such a user exists!")
+                });
+        }
+
+        const userSignIn = async() => {
+            const signInEmail =  userEmail.value;
+            const signInPassword =  userPassword.value;
+            signInWithEmailAndPassword(auth, signInEmail, signInPassword)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    alert("Your have sign in successfully!");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMassage = error.message;
+                    console.log(errorCode + errorMassage)
+                    alert("password or email")
+                });
+        }
+
+            const checkAuthstate = async() => {
+                onAuthStateChanged(auth, user => {
+                    if(user) {
+                        authForm.style.display = 'none'
+                        secretContect.style.display = 'block'
+                    }   
+                    else{
+                        authForm.style.display = 'block'
+                        secretContect.style.display = 'none'
+                    }
+                })
+            }
+
+            const userSignOut = async() => {
+                 await signOut(auth);
+            }
+
+            checkAuthstate();
+
+        signUpButton.addEventListener('click', userSignUp)
+        signInButton.addEventListener('click', userSignIn)
+        SignOutButton.addEventListener('click', userSignOut)
+
+
+
+      </script>
+
+
+</body>
+</html>
